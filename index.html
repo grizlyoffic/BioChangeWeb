@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio Changer · Multi‑language · Dark/Light</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.2s;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-primary);
+            padding: 1rem;
+        }
+
+        /* Light theme (default) */
+        :root {
+            --bg-primary: #f2f5f9;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --input-bg: #f8fafc;
+            --placeholder: #94a3b8;
+            --response-bg: #f1f5f9;
+            --response-border: #e2e8f0;
+            --lang-btn-bg: #eef2ff;
+            --lang-btn-text: #1e293b;
+            --mode-toggle-bg: #cbd5e1;
+        }
+
+        /* Dark theme */
+        body.dark {
+            --bg-primary: #0b1120;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
+            --accent: #60a5fa;
+            --accent-hover: #3b82f6;
+            --input-bg: #0f172a;
+            --placeholder: #64748b;
+            --response-bg: #0f172a;
+            --response-border: #334155;
+            --lang-btn-bg: #334155;
+            --lang-btn-text: #f1f5f9;
+            --mode-toggle-bg: #475569;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: var(--bg-card);
+            border-radius: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 2rem 2rem 2.5rem;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(4px);
+        }
+
+        /* header with language + theme toggle */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .lang-switch {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            background: var(--lang-btn-bg);
+            border: 1px solid var(--border);
+            color: var(--lang-btn-text);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .mode-toggle {
+            background: var(--mode-toggle-bg);
+            border-radius: 40px;
+            padding: 0.2rem;
+            display: flex;
+            gap: 0.2rem;
+            border: 1px solid var(--border);
+        }
+
+        .mode-icon {
+            background: transparent;
+            border: none;
+            font-size: 1.3rem;
+            line-height: 1;
+            padding: 0.3rem 0.7rem;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .mode-icon.active-mode {
+            background: var(--bg-card);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.8rem;
+            color: var(--text-primary);
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input, textarea {
+            width: 100%;
+            background: var(--input-bg);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 0.9rem 1.2rem;
+            font-size: 1rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+
+        textarea {
+            min-height: 130px;
+        }
+
+        ::placeholder {
+            color: var(--placeholder);
+            opacity: 0.7;
+        }
+
+        .proceed-btn {
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 18px rgba(59,130,246,0.3);
+            margin: 1.5rem 0 2rem 0;
+        }
+
+        .proceed-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .proceed-btn:active {
+            transform: scale(0.98);
+        }
+
+        .response-area {
+            background: var(--response-bg);
+            border: 2px solid var(--response-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace, sans-serif;
+        }
+
+        .response-title {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer-note {
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
+            color: var(--placeholder);
+            text-align: center;
+        }
+
+        /* language selection overlay (first visit) */
+        .lang-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.3s;
+        }
+
+        .lang-modal {
+            background: var(--bg-card);
+            border-radius: 48px;
+            padding: 2.5rem 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .lang-modal h2 {
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .lang-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .lang-option {
+            background: var(--lang-btn-bg);
+            color: var(--lang-btn-text);
+            border: 1px solid var(--border);
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 120px;
+        }
+
+        .lang-option:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="dark"> <!-- start with dark (can be overridden by toggle) -->
+    <!-- Language selector overlay (appears first time) -->
+    <div id="langOverlay" class="lang-overlay">
+        <div class="lang-modal">
+            <h2 id="modalTitle">🌐 Select Language</h2>
+            <div class="lang-options">
+                <button class="lang-option" data-lang="en">🇬🇧 English</button>
+                <button class="lang-option" data-lang="ar">🇸🇦 العربية</button>
+                <button class="lang-option" data-lang="hi">🇮🇳 हिन्दी</button>
+                <button class="lang-option" data-lang="bn">🇧🇩 বাংলা</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- top bar: language switcher + dark/light toggle -->
+        <div class="top-bar">
+            <div class="lang-switch" id="languageSwitch">
+                <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+                <button class="lang-btn" data-lang="ar">🇸🇦 العربية</button>
+                <button class="lang-btn" data-lang="hi">🇮🇳 हिन्दी</button>
+                <button class="lang-btn" data-lang="bn">🇧🇩 বাংলা</button>
+            </div>
+            <div class="mode-toggle" id="themeToggle">
+                <button class="mode-icon" id="lightModeBtn" title="Light">☀️</button>
+                <button class="mode-icon active-mode" id="darkModeBtn" title="Dark">🌙</button>
+            </div>
+        </div>
+
+        <h1 id="mainTitle">Bio Changer</h1>
+
+        <div class="input-group">
+            <label for="accessToken" id="tokenLabel">Access Token</label>
+            <input type="text" id="accessToken" placeholder="••••••••••••••••" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label for="bioText" id="bioLabel">Enter your bio text</label>
+            <textarea id="bioText" placeholder="Write something cool..." rows="4"></textarea>
+        </div>
+
+        <button class="proceed-btn" id="proceedBtn">
+            <span id="btnText">🚀 Proceed</span>
+            <span class="spinner" id="spinner"></span>
+        </button>
+
+        <div>
+            <div class="response-title">
+                <span>📬</span>
+                <span id="responseHeading">API Response</span>
+            </div>
+            <div class="response-area" id="responseDisplay">—</div>
+        </div>
+        <div class="footer-note" id="footerNote">bio updater · secure</div>
+    </div>
+
+    <script>
+        (function() {
+            // ---------- language data ----------
+            const translations = {
+                en: {
+                    mainTitle: "Bio Changer",
+                    tokenLabel: "Access Token",
+                    bioLabel: "Enter your bio text",
+                    btnText: "🚀 Proceed",
+                    responseHeading: "API Response",
+                    footerNote: "bio updater · secure",
+                    modalTitle: "🌐 Select Language",
+                    placeholderToken: "••••••••••••••••",
+                    placeholderBio: "Write something cool...",
+                    langEn: "🇬🇧 English",
+                    langAr: "🇸🇦 العربية",
+                    langHi: "🇮🇳 हिन्दी",
+                    langBn: "🇧🇩 বাংলা"
+                },
+                ar: {
+                    mainTitle: "مغير السيرة",
+                    tokenLabel: "رمز الوصول",
+                    bioLabel: "أدخل نص السيرة",
+                    btnText: "🚀 متابعة",
+                    responseHeading: "استجابة API",
+                    footerNote: "تحديث السيرة · آمن",
+                    modalTitle: "🌐 اختر اللغة",
+                    placeholderToken: "••••••••••••••••",
+                    placeholderBio: "اكتب شيئًا رائعًا...",
+                    langEn: "🇬🇧 English",
+                    langAr: "🇸🇦 العربية",
+                    langHi: "🇮🇳 हिन्दी",
+                    langBn: "🇧🇩 বাংলা"
+                },
+                hi: {
+                    mainTitle: "बायो चेंजर",
+                    tokenLabel: "एक्सेस टोकन",
+                    bioLabel: "अपना बायो टेक्स्ट लिखें",
+                    btnText: "🚀 आगे बढ़ें",
+                    responseHeading: "API रिस्पॉन्स",
+                    footerNote: "बायो अपडेट · सुरक्षित",
+                    modalTitle: "🌐 भाषा चुनें",
+                    placeholderToken: "••••••••••••••••",
+                    placeholderBio: "कुछ बढ़िया लिखें...",
+                    langEn: "🇬🇧 English",
+                    langAr: "🇸🇦 العربية",
+                    langHi: "🇮🇳 हिन्दी",
+                    langBn: "🇧🇩 বাংলা"
+                },
+                bn: {
+                    mainTitle: "বায়ো পরিবর্তক",
+                    tokenLabel: "অ্যাক্সেস টোকেন",
+                    bioLabel: "আপনার বায়ো টেক্সট লিখুন",
+                    btnText: "🚀 এগিয়ে যান",
+                    responseHeading: "API রেসপন্স",
+                    footerNote: "বায়ো আপডেট · নিরাপদ",
+                    modalTitle: "🌐 ভাষা নির্বাচন করুন",
+                    placeholderToken: "••••••••••••••••",
+                    placeholderBio: "মজার কিছু লেখ...",
+                    langEn: "🇬🇧 English",
+                    langAr: "🇸🇦 العربية",
+                    langHi: "🇮🇳 हिन्दी",
+                    langBn: "🇧🇩 বাংলা"
+                }
+            };
+
+            // DOM elements
+            const overlay = document.getElementById('langOverlay');
+            const modalTitle = document.getElementById('modalTitle');
+            const langOptions = document.querySelectorAll('.lang-option');
+            const langBtns = document.querySelectorAll('.lang-btn');
+            const mainTitle = document.getElementById('mainTitle');
+            const tokenLabel = document.getElementById('tokenLabel');
+            const bioLabel = document.getElementById('bioLabel');
+            const btnText = document.getElementById('btnText');
+            const responseHeading = document.getElementById('responseHeading');
+            const footerNote = document.getElementById('footerNote');
+            const accessTokenInput = document.getElementById('accessToken');
+            const bioTextarea = document.getElementById('bioText');
+            const proceedBtn = document.getElementById('proceedBtn');
+            const spinner = document.getElementById('spinner');
+            const responseDisplay = document.getElementById('responseDisplay');
+            const themeToggle = document.getElementById('themeToggle');
+            const lightBtn = document.getElementById('lightModeBtn');
+            const darkBtn = document.getElementById('darkModeBtn');
+            const body = document.body;
+
+            // current language (default: en)
+            let currentLang = localStorage.getItem('bioChangerLang') || 'en';
+
+            // ---------- helper: apply language ----------
+            function applyLanguage(lang) {
+                if (!translations[lang]) lang = 'en';
+                currentLang = lang;
+                localStorage.setItem('bioChangerLang', lang);
+
+                // update all text
+                mainTitle.innerText = translations[lang].mainTitle;
+                tokenLabel.innerText = translations[lang].tokenLabel;
+                bioLabel.innerText = translations[lang].bioLabel;
+                btnText.innerText = translations[lang].btnText;
+                responseHeading.innerText = translations[lang].responseHeading;
+                footerNote.innerText = translations[lang].footerNote;
+                accessTokenInput.placeholder = translations[lang].placeholderToken;
+                bioTextarea.placeholder = translations[lang].placeholderBio;
+
+                // update language buttons active state
+                langBtns.forEach(btn => {
+                    const btnLang = btn.getAttribute('data-lang');
+                    if (btnLang === lang) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                    // also update button text from translations (optional)
+                    if (translations[lang][`lang${btnLang.charAt(0).toUpperCase()+btnLang.slice(1)}`]) {
+                        btn.innerText = translations[lang][`lang${btnLang.charAt(0).toUpperCase()+btnLang.slice(1)}`];
+                    } else {
+                        // fallback default text
+                        if (btnLang === 'en') btn.innerText = '🇬🇧 English';
+                        else if (btnLang === 'ar') btn.innerText = '🇸🇦 العربية';
+                        else if (btnLang === 'hi') btn.innerText = '🇮🇳 हिन्दी';
+                        else if (btnLang === 'bn') btn.innerText = '🇧🇩 বাংলা';
+                    }
+                });
+
+                // if Arabic -> basic rtl hint (optional)
+                if (lang === 'ar') {
+                    body.style.direction = 'rtl';
+                } else {
+                    body.style.direction = 'ltr';
+                }
+            }
+
+            // hide language overlay (called after selection)
+            function hideOverlay() {
+                overlay.classList.add('hidden');
+            }
+
+            // ---------- check first visit ----------
+            if (!localStorage.getItem('bioChangerLang')) {
+                overlay.classList.remove('hidden');
+                // set modal title based on default? better keep en
+                modalTitle.innerText = '🌐 Select Language';
+            } else {
+                overlay.classList.add('hidden');
+                applyLanguage(localStorage.getItem('bioChangerLang'));
+            }
+
+            // language option click (overlay)
+            langOptions.forEach(opt => {
+                opt.addEventListener('click', function(e) {
+                    const selectedLang = this.getAttribute('data-lang');
+                    applyLanguage(selectedLang);
+                    hideOverlay();
+                });
+            });
+
+            // language switch from top bar
+            langBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const newLang = this.getAttribute('data-lang');
+                    applyLanguage(newLang);
+                });
+            });
+
+            // ---------- theme: dark/light ----------
+            // check local storage for theme
+            if (localStorage.getItem('bioTheme') === 'light') {
+                body.classList.remove('dark');
+                lightBtn.classList.add('active-mode');
+                darkBtn.classList.remove('active-mode');
+            } else {
+                body.classList.add('dark');
+                darkBtn.classList.add('active-mode');
+                lightBtn.classList.remove('active-mode');
+            }
+
+            lightBtn.addEventListener('click', () => {
+                body.classList.remove('dark');
+                localStorage.setItem('bioTheme', 'light');
+                lightBtn.classList.add('active-mode');
+                darkBtn.classList.remove('active-mode');
+            });
+
+            darkBtn.addEventListener('click', () => {
+                body.classList.add('dark');
+                localStorage.setItem('bioTheme', 'dark');
+                darkBtn.classList.add('active-mode');
+                lightBtn.classList.remove('active-mode');
+            });
+
+            // ---------- API call: proceed button ----------
+            proceedBtn.addEventListener('click', async function() {
+                const token = accessTokenInput.value.trim();
+                const bio = bioTextarea.value.trim();
+
+                if (!token || !bio) {
+                    responseDisplay.innerText = '⚠️ Please fill both Access Token and Bio text.';
+                    return;
+                }
+
+                // show spinner, disable button
+                spinner.style.display = 'inline-block';
+                proceedBtn.disabled = true;
+                responseDisplay.innerText = '⏳ Updating bio...';
+
+                // build URL
+                const baseUrl = 'https://bio-update.vercel.app/bio';
+                const url = `${baseUrl}?access_token=${encodeURIComponent(token)}&bio=${encodeURIComponent(bio)}`;
+
+                try {
+                    const response = await fetch(url);
+                    let responseText = await response.text();   // get as text first
+
+                    // try to parse JSON for pretty display
+                    try {
+                        const json = JSON.parse(responseText);
+                        responseText = JSON.stringify(json, null, 2);
+                    } catch (e) {
+                        // keep as text (plain)
+                    }
+
+                    responseDisplay.innerText = responseText || '(empty response)';
+                } catch (error) {
+                    responseDisplay.innerText = '❌ Network error: ' + error.message;
+                } finally {
+                    spinner.style.display = 'none';
+                    proceedBtn.disabled = false;
+                }
+            });
+
+            // apply initial language if exists (after overlay may already set)
+            if (localStorage.getItem('bioChangerLang')) {
+                applyLanguage(localStorage.getItem('bioChangerLang'));
+            } else {
+                // but we still need to apply minimal english for placeholder consistency
+                applyLanguage('en'); // but overlay is visible, fine
+            }
+
+            // Ensure overlay doesn't block if lang stored but overlay visible? handle double check
+            if (localStorage.getItem('bioChangerLang')) {
+                overlay.classList.add('hidden');
+            }
+
+            // small improvement: if user clicks outside? we keep mandatory selection
+        })();
+    </script>
+</body>
+  </html>
